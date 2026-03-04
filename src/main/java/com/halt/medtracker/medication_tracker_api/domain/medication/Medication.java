@@ -45,14 +45,9 @@ public class Medication extends BaseEntity {
     @Column(columnDefinition = "Text")
     private String instructions;
 
-    
     @Builder.Default
     @Column(name = "active")
-    private boolean active = true;
+    private boolean isActive = true;
 
     private String imageUrl;
-
-    public boolean isActive() {
-        return this.active;
-    }
 }

@@ -46,7 +46,8 @@ public class MedicationMapper {
                     .expiryDate(request.getExpiryDate())
                     .startDate(request.getStartDate())
                     .endDate(request.getEndDate())
-                    .active(true)
+                    // FIX was here previously: field is named 'isActive' so Lombok builder method is .isActive(true)
+                    .isActive(true)
                     .build();
         }
 

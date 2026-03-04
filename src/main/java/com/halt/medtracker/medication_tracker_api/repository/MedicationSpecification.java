@@ -46,6 +46,8 @@ public class MedicationSpecification {
                 ));
             }
 
+            // FIX: was root.get("isActive") — Hibernate maps the field 'active' as column
+            // 'active', so the JPA attribute name is "active", not "isActive"
             if(filter.getIsActive() != null){
                 predicates.add(cb.equal(root.get("active"), filter.getIsActive()));
             }
