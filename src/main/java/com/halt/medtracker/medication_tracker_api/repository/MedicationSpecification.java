@@ -22,8 +22,9 @@ public class MedicationSpecification {
             // user security , important!!! forces us to get data for our user , no one else
             predicates.add(cb.equal(root.get("user").get("id"), userId));
 
-            // ---> NEW ENTERPRISE RULE: Never return soft-deleted items <---
-            predicates.add(cb.isFalse(root.get("isDeleted")));
+            // FIX: was root.get("isDeleted") — Hibernate maps the field 'deleted' as column
+            // 'deleted', so the JPA attribute name is "deleted", not "isDeleted"
+            predicates.add(cb.isFalse(root.get("deleted")));
             
             // If filter is null (e.g. from getAllMedications), just return the base predicates
             if (filter == null) {
@@ -45,9 +46,8 @@ public class MedicationSpecification {
                 ));
             }
 
-            // if medication is active or not
             if(filter.getIsActive() != null){
-                predicates.add(cb.equal(root.get("isActive"), filter.getIsActive()));
+                predicates.add(cb.equal(root.get("active"), filter.getIsActive()));
             }
             
             // med status 

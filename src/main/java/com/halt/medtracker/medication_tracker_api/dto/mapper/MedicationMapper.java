@@ -28,6 +28,7 @@ public class MedicationMapper {
                 .imageUrl(medication.getImageUrl())
                 .build();
     }
+
     public Medication toEntity(
         CreateMedicationRequestDTO request,
         User user){
@@ -44,8 +45,8 @@ public class MedicationMapper {
                     .imageUrl(request.getImageUrl())
                     .expiryDate(request.getExpiryDate())
                     .startDate(request.getStartDate())
-                    .endDate(request.getEndDate()) 
-                    .isActive(true) 
+                    .endDate(request.getEndDate())
+                    .active(true)
                     .build();
         }
 

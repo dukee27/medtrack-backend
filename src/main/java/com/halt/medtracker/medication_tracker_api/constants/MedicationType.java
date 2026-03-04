@@ -1,12 +1,16 @@
 package com.halt.medtracker.medication_tracker_api.constants;
 
 public enum MedicationType {
-    TABLET, 
-    CAPSULE, 
-    SYRUP, 
+    PILL,
+    TABLET,
+    CAPSULE,
+    LIQUID,
+    SYRUP,
     INJECTION,
-    DROPS, 
-    INHALER, 
-    POWDER, 
+    TOPICAL,
+    INHALER,
+    PATCH,
+    DROPS,
+    POWDER,
     OTHER
 }

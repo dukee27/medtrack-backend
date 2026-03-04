@@ -37,7 +37,7 @@ public class Medication extends BaseEntity {
     private int quantityLeft;
 
     private LocalDate endDate;
-    private LocalDate expiryDate; 
+    private LocalDate expiryDate;
     private LocalDate startDate;
 
     private String doctorName;
@@ -45,7 +45,14 @@ public class Medication extends BaseEntity {
     @Column(columnDefinition = "Text")
     private String instructions;
 
+    
     @Builder.Default
-    private boolean isActive = true;
+    @Column(name = "active")
+    private boolean active = true;
+
     private String imageUrl;
+
+    public boolean isActive() {
+        return this.active;
+    }
 }

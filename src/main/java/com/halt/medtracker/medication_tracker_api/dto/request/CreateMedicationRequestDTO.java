@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.halt.medtracker.medication_tracker_api.constants.MedicationType;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,11 +29,7 @@ public class CreateMedicationRequestDTO {
     private String instructions;
     private String imageUrl;
 
-    @NotNull(message = "Expiry date is required")
-    @Future(message = "Expiry date must be in the future")
     private LocalDate expiryDate;
-
-    @NotNull(message = "start date is required")
     private LocalDate startDate;
     private LocalDate endDate;
 }
