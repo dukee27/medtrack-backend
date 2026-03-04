@@ -34,7 +34,7 @@ public class MedicationLogService {
     @Transactional
     public MedicationLogResponseDTO logDose(User actor, User subject, Long medicationId, LogDoseRequest request) {
 
-        Medication medication = medicationRepository.findByIdAndIsDeletedFalse(medicationId)
+        Medication medication = medicationRepository.findByIdAndDeletedFalse(medicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
 
         // Security: ensure the medication belongs to the subject
@@ -81,7 +81,7 @@ public class MedicationLogService {
     @Transactional(readOnly = true)
     public List<MedicationLogResponseDTO> getLogsForMedication(User subject, Long medicationId) {
 
-        Medication medication = medicationRepository.findByIdAndIsDeletedFalse(medicationId)
+        Medication medication = medicationRepository.findByIdAndDeletedFalse(medicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
 
         if (!medication.getUser().getId().equals(subject.getId())) {

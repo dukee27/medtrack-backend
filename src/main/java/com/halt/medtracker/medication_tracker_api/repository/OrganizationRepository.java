@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
-    Optional<Organization> findByIdAndIsDeletedFalse(Long id);
-    List<Organization> findByOwnerAndIsDeletedFalse(User owner);
+    Optional<Organization> findByIdAndDeletedFalse(Long id);
+    List<Organization> findByOwnerAndDeletedFalse(User owner);
 }

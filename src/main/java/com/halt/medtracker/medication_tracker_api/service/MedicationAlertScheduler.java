@@ -25,7 +25,7 @@ public class MedicationAlertScheduler {
         log.info("Running daily medication alert scheduler...");
         
         // Fetch all active medications across the entire platform
-        List<Medication> allActiveMeds = medicationRepository.findAll().stream().filter(m -> !m.isDeleted()).toList();
+        List<Medication> allActiveMeds = medicationRepository.findByDeletedFalse();
         LocalDate today = LocalDate.now();
 
         for (Medication med : allActiveMeds) {

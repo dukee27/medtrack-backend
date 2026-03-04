@@ -34,7 +34,7 @@ public class MedicationScheduleService {
             CreateMedicationScheduleRequestDTO request) {
 
         Medication medication = medicationRepository
-                .findByIdAndIsDeletedFalse(request.getMedicationId())
+                .findByIdAndDeletedFalse(request.getMedicationId())
                 .orElseThrow(() -> new RuntimeException("Medication not found"));
 
         if (!medication.getUser().getId().equals(subject.getId())) {
@@ -59,7 +59,7 @@ public class MedicationScheduleService {
             UpdateScheduleRequest request) {
 
         MedicationSchedule schedule = medicationScheduleRepository
-                .findByIdAndIsDeletedFalse(scheduleId)
+                .findByIdAndDeletedFalse(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
         if (!schedule.getMedication().getUser().getId().equals(subject.getId())) {
@@ -78,7 +78,7 @@ public class MedicationScheduleService {
 
     public List<MedicationScheduleResponseDTO> getSchedules(User subject) {
         return medicationScheduleRepository
-                .findByMedicationUserIdAndIsDeletedFalse(subject.getId())
+                .findByMedicationUserIdAndDeletedFalse(subject.getId())
                 .stream()
                 .filter(schedule -> !schedule.getMedication().isDeleted())
                 .map(medicationScheduleMapper::toResponse)
@@ -87,7 +87,7 @@ public class MedicationScheduleService {
 
     public MedicationScheduleResponseDTO getScheduleById(Long scheduleId, User subject) {
         MedicationSchedule schedule = medicationScheduleRepository
-                .findByIdAndIsDeletedFalse(scheduleId)
+                .findByIdAndDeletedFalse(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
         if (!schedule.getMedication().getUser().getId().equals(subject.getId())) {
@@ -101,7 +101,7 @@ public class MedicationScheduleService {
     @Transactional
     public void deleteSchedule(User actor, User subject, Long scheduleId, String reason) {
         MedicationSchedule schedule = medicationScheduleRepository
-                .findByIdAndIsDeletedFalse(scheduleId)
+                .findByIdAndDeletedFalse(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
         if (!schedule.getMedication().getUser().getId().equals(subject.getId())) {

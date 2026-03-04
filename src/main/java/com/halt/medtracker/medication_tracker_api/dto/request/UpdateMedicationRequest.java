@@ -2,6 +2,8 @@ package com.halt.medtracker.medication_tracker_api.dto.request;
 
 import java.time.LocalDate;
 
+import com.halt.medtracker.medication_tracker_api.constants.MedicationType;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -20,8 +22,11 @@ public class UpdateMedicationRequest {
     @NotNull(message = "quantity is required")
     @Positive(message = "Quantity must be greater than 0")
     private Integer quantity;
-    private LocalDate endDate;
 
+    private MedicationType type;
+    private String doctorName;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private LocalDate expiryDate;
 
     private String instructions;

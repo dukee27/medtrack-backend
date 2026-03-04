@@ -12,8 +12,8 @@ import com.halt.medtracker.medication_tracker_api.domain.medication.MedicationSc
 public interface MedicationScheduleRepository extends JpaRepository<MedicationSchedule,Long> {
     
     // Fetch active schedules
-    List<MedicationSchedule> findByMedicationUserIdAndIsDeletedFalse(Long userId);
+    List<MedicationSchedule> findByMedicationUserIdAndDeletedFalse(Long userId);
     
     // Fetch a specific active schedule
-    Optional<MedicationSchedule> findByIdAndIsDeletedFalse(Long id);
+    Optional<MedicationSchedule> findByIdAndDeletedFalse(Long id);
 }

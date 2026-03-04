@@ -40,7 +40,7 @@ public class AccessControlService {
 
         // Prevent duplicate pending requests
         boolean alreadyPending = accessControlRepository
-                .findByPatientAndStatusAndIsDeletedFalse(patient, AccessStatus.PENDING)
+                .findByPatientAndStatusAndDeletedFalse(patient, AccessStatus.PENDING)
                 .stream().anyMatch(a -> a.getCaregiver().getId().equals(caregiver.getId()));
 
         if (alreadyPending) {
@@ -73,13 +73,13 @@ public class AccessControlService {
     }
 
     public List<AccessResponseDTO> getPendingRequests(User patient) {
-        return accessControlRepository.findByPatientAndStatusAndIsDeletedFalse(patient, AccessStatus.PENDING)
+        return accessControlRepository.findByPatientAndStatusAndDeletedFalse(patient, AccessStatus.PENDING)
                 .stream().map(accessControlMapper::toResponse).toList();
     }
 
     @Transactional
     public AccessResponseDTO approveRequest(User patient, Long accessId, Set<Permissions> grantedPermissions) {
-        AccessControl access = accessControlRepository.findByIdAndIsDeletedFalse(accessId)
+        AccessControl access = accessControlRepository.findByIdAndDeletedFalse(accessId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
         if (!access.getPatient().getId().equals(patient.getId())) {
@@ -111,7 +111,7 @@ public class AccessControlService {
 
     @Transactional
     public AccessResponseDTO rejectRequest(User patient, Long accessId) {
-        AccessControl access = accessControlRepository.findByIdAndIsDeletedFalse(accessId)
+        AccessControl access = accessControlRepository.findByIdAndDeletedFalse(accessId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
         if (!access.getPatient().getId().equals(patient.getId())) {
@@ -139,13 +139,13 @@ public class AccessControlService {
 
     @Transactional(readOnly = true)
     public List<AccessResponseDTO> getPeopleWithAccess(User patient) {
-        return accessControlRepository.findByPatientAndStatusAndIsDeletedFalse(patient, AccessStatus.APPROVED)
+        return accessControlRepository.findByPatientAndStatusAndDeletedFalse(patient, AccessStatus.APPROVED)
                 .stream().map(accessControlMapper::toResponse).toList();
     }
 
     @Transactional
     public AccessResponseDTO updatePermissions(User patient, Long accessId, UpdatePermissionsRequest request) {
-        AccessControl access = accessControlRepository.findByIdAndIsDeletedFalse(accessId)
+        AccessControl access = accessControlRepository.findByIdAndDeletedFalse(accessId)
                 .orElseThrow(() -> new RuntimeException("Access record not found"));
 
         if (!access.getPatient().getId().equals(patient.getId())) {
@@ -173,7 +173,7 @@ public class AccessControlService {
 
     @Transactional
     public void revokeAccess(User actor, Long accessId, String reason) {
-        AccessControl access = accessControlRepository.findByIdAndIsDeletedFalse(accessId)
+        AccessControl access = accessControlRepository.findByIdAndDeletedFalse(accessId)
                 .orElseThrow(() -> new RuntimeException("Access record not found"));
 
         boolean isPatient = access.getPatient().getId().equals(actor.getId());
@@ -208,7 +208,7 @@ public class AccessControlService {
 
     @Transactional(readOnly = true)
     public List<AccessResponseDTO> getAccessiblePatients(User caregiver) {
-        return accessControlRepository.findByCaregiverAndStatusAndIsDeletedFalse(caregiver, AccessStatus.APPROVED)
+        return accessControlRepository.findByCaregiverAndStatusAndDeletedFalse(caregiver, AccessStatus.APPROVED)
                 .stream().map(accessControlMapper::toResponse).toList();
     }
 }

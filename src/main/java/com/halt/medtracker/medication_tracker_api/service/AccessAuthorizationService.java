@@ -26,7 +26,7 @@ public class AccessAuthorizationService {
         // Fetch the active permission relationship matrix
         // FIX: Using the new secure repository method we created to prevent the Enum crash
         AccessControl access = accessControlRepository
-                .findFirstByPatientIdAndCaregiverIdAndStatusAndIsDeletedFalse(
+                .findFirstByPatientIdAndCaregiverIdAndStatusAndDeletedFalse(
                         patient.getId(), 
                         actor.getId(), 
                         AccessStatus.APPROVED)

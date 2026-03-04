@@ -36,7 +36,7 @@ public class MedicationIntakeTimeService {
             CreateMedicationIntakeTimeRequestDTO request) {
 
         MedicationSchedule schedule = scheduleRepository
-                .findByIdAndIsDeletedFalse(request.getScheduleId())
+                .findByIdAndDeletedFalse(request.getScheduleId())
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
         if (!schedule.getMedication().getUser().getId().equals(subject.getId())) {
@@ -62,7 +62,7 @@ public class MedicationIntakeTimeService {
             UpdateInTakeTimeRequest request) {
 
         MedicationIntakeTime time = intakeTimeRepository
-                .findByIdAndIsDeletedFalse(id)
+                .findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("Intake time not found"));
 
         if (!time.getSchedule().getMedication().getUser().getId().equals(subject.getId())) {
@@ -82,7 +82,7 @@ public class MedicationIntakeTimeService {
 
     public List<MedicationIntakeTimeResponseDTO> getIntakeTimes(User subject, Long scheduleId) {
         MedicationSchedule schedule = scheduleRepository
-                .findByIdAndIsDeletedFalse(scheduleId)
+                .findByIdAndDeletedFalse(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
         if (!schedule.getMedication().getUser().getId().equals(subject.getId())) {
@@ -95,7 +95,7 @@ public class MedicationIntakeTimeService {
         }
 
         return intakeTimeRepository
-                .findByScheduleIdAndIsDeletedFalse(scheduleId)
+                .findByScheduleIdAndDeletedFalse(scheduleId)
                 .stream()
                 .map(intakeTimeMapper::toResponse)
                 .toList();
@@ -103,7 +103,7 @@ public class MedicationIntakeTimeService {
 
     public MedicationIntakeTimeResponseDTO getIntakeTimeById(User subject, Long id) {
         MedicationIntakeTime time = intakeTimeRepository
-                .findByIdAndIsDeletedFalse(id)
+                .findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("Intake time not found"));
 
         if (!time.getSchedule().getMedication().getUser().getId().equals(subject.getId())) {
@@ -117,7 +117,7 @@ public class MedicationIntakeTimeService {
     @Transactional
     public void deleteIntakeTime(User actor, User subject, Long id, String reason) {
         MedicationIntakeTime time = intakeTimeRepository
-                .findByIdAndIsDeletedFalse(id)
+                .findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("Intake time not found"));
 
         if (!time.getSchedule().getMedication().getUser().getId().equals(subject.getId())) {

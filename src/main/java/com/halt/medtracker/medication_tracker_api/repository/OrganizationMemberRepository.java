@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface OrganizationMemberRepository extends JpaRepository<OrganizationMember, Long> {
-    List<OrganizationMember> findByUserAndIsDeletedFalse(User user);
-    List<OrganizationMember> findByOrganizationAndIsDeletedFalse(Organization organization);
-    Optional<OrganizationMember> findByOrganizationAndUserAndIsDeletedFalse(Organization organization, User user);
+    List<OrganizationMember> findByUserAndDeletedFalse(User user);
+    List<OrganizationMember> findByOrganizationAndDeletedFalse(Organization organization);
+    Optional<OrganizationMember> findByOrganizationAndUserAndDeletedFalse(Organization organization, User user);
 }

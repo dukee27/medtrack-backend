@@ -57,7 +57,7 @@ public class MedicationService {
 
     @Transactional(readOnly = true)
     public Medication getMedicationById(Long id, User subject) {
-        Medication medication = medicationRepository.findByIdAndIsDeletedFalse(id)
+        Medication medication = medicationRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found or has been deleted"));
         
         // Enterprise Security Check
@@ -128,12 +128,12 @@ public class MedicationService {
     // --- ENTERPRISE ARCHIVE & RESTORE ---
     @Transactional(readOnly = true)
     public List<Medication> getArchivedMedications(User subject) {
-        return medicationRepository.findByUserIdAndIsDeletedTrue(subject.getId());
+        return medicationRepository.findByUserIdAndDeletedTrue(subject.getId());
     }
 
     @Transactional
     public Medication restoreMedication(User actor, User subject, Long id) {
-        Medication medication = medicationRepository.findByIdAndIsDeletedTrue(id)
+        Medication medication = medicationRepository.findByIdAndDeletedTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Archived medication not found"));
 
         if (!medication.getUser().getId().equals(subject.getId())) {

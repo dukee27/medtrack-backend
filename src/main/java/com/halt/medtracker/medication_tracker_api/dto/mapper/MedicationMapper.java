@@ -28,7 +28,6 @@ public class MedicationMapper {
                 .imageUrl(medication.getImageUrl())
                 .build();
     }
-
     public Medication toEntity(
         CreateMedicationRequestDTO request,
         User user){
@@ -45,9 +44,8 @@ public class MedicationMapper {
                     .imageUrl(request.getImageUrl())
                     .expiryDate(request.getExpiryDate())
                     .startDate(request.getStartDate())
-                    .endDate(request.getEndDate())
-                    // FIX was here previously: field is named 'isActive' so Lombok builder method is .isActive(true)
-                    .isActive(true)
+                    .endDate(request.getEndDate()) 
+                    .active(true) 
                     .build();
         }
 
@@ -77,6 +75,15 @@ public class MedicationMapper {
         }
         if(request.getInstructions() != null){
             medication.setInstructions(request.getInstructions());
+        }
+        if(request.getDoctorName() != null){
+            medication.setDoctorName(request.getDoctorName());
+        }
+        if(request.getStartDate() != null){
+            medication.setStartDate(request.getStartDate());
+        }
+        if(request.getType() != null){
+            medication.setType(request.getType());
         }
     }
 }

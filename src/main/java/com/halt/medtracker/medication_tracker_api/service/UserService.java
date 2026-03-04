@@ -7,8 +7,10 @@ import com.halt.medtracker.medication_tracker_api.domain.identity.User;
 import com.halt.medtracker.medication_tracker_api.dto.mapper.UserMapper;
 import com.halt.medtracker.medication_tracker_api.dto.request.CreateUserRequestDTO;
 import com.halt.medtracker.medication_tracker_api.dto.request.UpdateUserRequest;
+import com.halt.medtracker.medication_tracker_api.dto.request.ChangePasswordRequest;
 import com.halt.medtracker.medication_tracker_api.exception.ResourceNotFoundException;
 import com.halt.medtracker.medication_tracker_api.exception.UserAlreadyExistsException;
+import com.halt.medtracker.medication_tracker_api.exception.ValidationException;
 import com.halt.medtracker.medication_tracker_api.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -59,5 +61,14 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
+    }
+
+    @Transactional
+    public void changePassword(User user, ChangePasswordRequest request) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
+            throw new ValidationException("Current password is incorrect");
+        }
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }

@@ -13,21 +13,21 @@ import com.halt.medtracker.medication_tracker_api.domain.identity.User;
 @Repository
 public interface AccessControlRepository extends JpaRepository<AccessControl, Long> {
 
-    Optional<AccessControl> findFirstByPatientAndCaregiverAndStatusAndIsDeletedFalse(
+    Optional<AccessControl> findFirstByPatientAndCaregiverAndStatusAndDeletedFalse(
         User patient, User caregiver, AccessStatus status
     );
 
-    List<AccessControl> findByPatientAndStatusAndIsDeletedFalse(
+    List<AccessControl> findByPatientAndStatusAndDeletedFalse(
         User patient, AccessStatus status
     );
 
-    List<AccessControl> findByCaregiverAndStatusAndIsDeletedFalse(
+    List<AccessControl> findByCaregiverAndStatusAndDeletedFalse(
         User caregiver, AccessStatus status
     );
 
-    Optional<AccessControl> findByIdAndIsDeletedFalse(Long id);
+    Optional<AccessControl> findByIdAndDeletedFalse(Long id);
 
-    Optional<AccessControl> findFirstByPatientIdAndCaregiverIdAndStatusAndIsDeletedFalse(
+    Optional<AccessControl> findFirstByPatientIdAndCaregiverIdAndStatusAndDeletedFalse(
         Long patientId, Long caregiverId, AccessStatus status
     );
 }

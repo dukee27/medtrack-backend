@@ -14,10 +14,13 @@ import java.util.Optional;
 public interface MedicationRepository extends JpaRepository<Medication, Long>, JpaSpecificationExecutor<Medication> {
 
     // Fetch active medications (not deleted)
-    List<Medication> findByUserIdAndIsDeletedFalse(Long userId);
+    List<Medication> findByUserIdAndDeletedFalse(Long userId);
 
     // Fetch specific medication, ensuring it's not deleted
-    Optional<Medication> findByIdAndIsDeletedFalse(Long id);
+    Optional<Medication> findByIdAndDeletedFalse(Long id);
+
+    // Global fetch of all non-deleted medications (used by scheduler)
+    List<Medication> findByDeletedFalse();
 
     // Smart Suggestion: Find distinct medications by name for a user (includes deleted ones!)
     @Query("SELECT m FROM Medication m WHERE m.user.id = :userId AND LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%')) ORDER BY m.createdAt DESC")
@@ -25,8 +28,8 @@ public interface MedicationRepository extends JpaRepository<Medication, Long>, J
 
     // --- ARCHIVE / TRASH BIN QUERIES ---
     // Fetch medications that ARE deleted (for the archive view)
-    List<Medication> findByUserIdAndIsDeletedTrue(Long userId);
+    List<Medication> findByUserIdAndDeletedTrue(Long userId);
 
     // Fetch a specific deleted medication for restoration
-    Optional<Medication> findByIdAndIsDeletedTrue(Long id);
+    Optional<Medication> findByIdAndDeletedTrue(Long id);
 }

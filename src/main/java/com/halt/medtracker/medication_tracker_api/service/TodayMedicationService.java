@@ -29,7 +29,7 @@ public class TodayMedicationService {
         LocalDate today = LocalDate.now();
 
         // 1. Enterprise Fix: Fetch only active schedules
-        List<MedicationSchedule> schedules = medicationScheduleRepository.findByMedicationUserIdAndIsDeletedFalse(subject.getId());
+        List<MedicationSchedule> schedules = medicationScheduleRepository.findByMedicationUserIdAndDeletedFalse(subject.getId());
 
         return schedules.stream()
                 // 2. Enterprise Fix: Ensure the parent medication isn't soft-deleted
@@ -37,7 +37,7 @@ public class TodayMedicationService {
                 .filter(schedule -> appliesToday(schedule, today))
                 .flatMap(schedule ->
                     // 3. Enterprise Fix: Fetch only active intake times
-                    medicationIntakeTimeRepository.findByScheduleIdAndIsDeletedFalse(schedule.getId())
+                    medicationIntakeTimeRepository.findByScheduleIdAndDeletedFalse(schedule.getId())
                     .stream()
                     .map(time -> toResponse(schedule, time))
                 )

@@ -17,6 +17,7 @@ import com.halt.medtracker.medication_tracker_api.constants.Permissions;
 import com.halt.medtracker.medication_tracker_api.domain.identity.User;
 import com.halt.medtracker.medication_tracker_api.dto.ApiResponse;
 import com.halt.medtracker.medication_tracker_api.dto.mapper.UserMapper;
+import com.halt.medtracker.medication_tracker_api.dto.request.ChangePasswordRequest;
 import com.halt.medtracker.medication_tracker_api.dto.request.CreateUserRequestDTO;
 import com.halt.medtracker.medication_tracker_api.dto.request.UpdateUserRequest;
 import com.halt.medtracker.medication_tracker_api.dto.response.UserResponseDTO;
@@ -96,6 +97,16 @@ public class UserController {
                         userMapper.toResponse(subject)
                 )
         );
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody ChangePasswordRequest request) {
+
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        userService.changePassword(user, request);
+        return ResponseEntity.ok(ApiResponse.success("Password changed successfully", null));
     }
 
 }

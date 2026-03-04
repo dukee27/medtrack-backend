@@ -18,7 +18,7 @@ public class OrganizationMember extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id", nullable = false)
-    @JsonIgnore // FIX: Prevents StackOverflow crash when fetching API
+    @JsonIgnore
     private Organization organization;
 
     @ManyToOne(fetch = FetchType.LAZY)

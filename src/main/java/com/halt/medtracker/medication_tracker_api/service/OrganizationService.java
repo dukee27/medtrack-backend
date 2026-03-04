@@ -60,12 +60,12 @@ public class OrganizationService {
 
     @Transactional(readOnly = true)
     public List<OrganizationResponseDTO> getMyOrganizationsDTO(User user) {
-        List<OrganizationMember> memberships = memberRepository.findByUserAndIsDeletedFalse(user);
+        List<OrganizationMember> memberships = memberRepository.findByUserAndDeletedFalse(user);
         return memberships.stream()
             .filter(m -> !m.getOrganization().isDeleted())
             .map(m -> {
                 Organization org = m.getOrganization();
-                int memberCount = memberRepository.findByOrganizationAndIsDeletedFalse(org).size();
+                int memberCount = memberRepository.findByOrganizationAndDeletedFalse(org).size();
                 return toOrganizationDTO(org, memberCount);
             })
             .distinct()
@@ -74,17 +74,17 @@ public class OrganizationService {
 
     @Transactional(readOnly = true)
     public List<OrganizationMemberResponseDTO> getOrganizationMembersDTO(User actor, Long orgId) {
-        Organization org = organizationRepository.findByIdAndIsDeletedFalse(orgId)
+        Organization org = organizationRepository.findByIdAndDeletedFalse(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
-        memberRepository.findByOrganizationAndUserAndIsDeletedFalse(org, actor)
+        memberRepository.findByOrganizationAndUserAndDeletedFalse(org, actor)
                 .orElseThrow(() -> new SecurityException("You do not have access to this organization"));
-        return memberRepository.findByOrganizationAndIsDeletedFalse(org)
+        return memberRepository.findByOrganizationAndDeletedFalse(org)
                 .stream().map(m -> toMemberDTO(m, org)).toList();
     }
 
     @Transactional
     public OrganizationMemberResponseDTO addMemberDTO(User actor, Long orgId, AddMemberRequest request) {
-        Organization org = organizationRepository.findByIdAndIsDeletedFalse(orgId)
+        Organization org = organizationRepository.findByIdAndDeletedFalse(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
 
         if (!org.getOwner().getId().equals(actor.getId())) {
@@ -94,7 +94,7 @@ public class OrganizationService {
         User targetUser = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User with email not found: " + request.getEmail()));
 
-        if (memberRepository.findByOrganizationAndUserAndIsDeletedFalse(org, targetUser).isPresent()) {
+        if (memberRepository.findByOrganizationAndUserAndDeletedFalse(org, targetUser).isPresent()) {
             throw new IllegalArgumentException("User is already a member of this bucket");
         }
 
@@ -118,7 +118,7 @@ public class OrganizationService {
 
     @Transactional
     public void removeMember(User actor, Long orgId, Long memberId, String reason) {
-        Organization org = organizationRepository.findByIdAndIsDeletedFalse(orgId)
+        Organization org = organizationRepository.findByIdAndDeletedFalse(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
         if (!org.getOwner().getId().equals(actor.getId())) {
             throw new SecurityException("Only bucket owners can remove members");
@@ -152,29 +152,29 @@ public class OrganizationService {
 
     @Transactional(readOnly = true)
     public List<Organization> getMyOrganizations(User user) {
-        return memberRepository.findByUserAndIsDeletedFalse(user).stream()
+        return memberRepository.findByUserAndDeletedFalse(user).stream()
             .map(OrganizationMember::getOrganization).filter(org -> !org.isDeleted()).toList();
     }
 
     @Transactional(readOnly = true)
     public List<OrganizationMember> getOrganizationMembers(User actor, Long orgId) {
-        Organization org = organizationRepository.findByIdAndIsDeletedFalse(orgId)
+        Organization org = organizationRepository.findByIdAndDeletedFalse(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
-        memberRepository.findByOrganizationAndUserAndIsDeletedFalse(org, actor)
+        memberRepository.findByOrganizationAndUserAndDeletedFalse(org, actor)
                 .orElseThrow(() -> new SecurityException("You do not have access to this organization"));
-        return memberRepository.findByOrganizationAndIsDeletedFalse(org);
+        return memberRepository.findByOrganizationAndDeletedFalse(org);
     }
 
     @Transactional
     public OrganizationMember addMember(User actor, Long orgId, AddMemberRequest request) {
-        Organization org = organizationRepository.findByIdAndIsDeletedFalse(orgId)
+        Organization org = organizationRepository.findByIdAndDeletedFalse(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
         if (!org.getOwner().getId().equals(actor.getId())) {
             throw new SecurityException("Only bucket owners can add members directly");
         }
         User targetUser = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (memberRepository.findByOrganizationAndUserAndIsDeletedFalse(org, targetUser).isPresent()) {
+        if (memberRepository.findByOrganizationAndUserAndDeletedFalse(org, targetUser).isPresent()) {
             throw new IllegalArgumentException("User is already a member");
         }
         boolean isApproved = org.getType() == OrganizationType.HOME;

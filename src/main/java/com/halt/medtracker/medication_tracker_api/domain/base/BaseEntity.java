@@ -30,13 +30,12 @@ public abstract class BaseEntity {
     @Version
     private Long version;
 
-    @Column(name = "deleted", nullable = false)
-    private boolean isDeleted = false;
+    private boolean deleted = false;
 
     private LocalDateTime deletedAt;
 
-    private String deletedBy; // Email or ID of the user who deleted this
+    private String deletedBy;
 
     @Column(columnDefinition = "TEXT")
-    private String deleteReason; // Optional reason for audit logs
+    private String deleteReason;
 }

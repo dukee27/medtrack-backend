@@ -43,19 +43,19 @@ public class NotificationService {
     // FIX: Returns DTOs instead of raw entities to prevent lazy-load Jackson crash
     @Transactional(readOnly = true)
     public List<NotificationResponseDTO> getUserNotificationDTOs(Long userId) {
-        return notificationRepository.findByUserIdAndIsDeletedFalseOrderByCreatedAtDesc(userId)
+        return notificationRepository.findByUserIdAndDeletedFalseOrderByCreatedAtDesc(userId)
                 .stream().map(this::toDTO).toList();
     }
 
     // Raw version for internal use
     @Transactional(readOnly = true)
     public List<Notification> getUserNotifications(Long userId) {
-        return notificationRepository.findByUserIdAndIsDeletedFalseOrderByCreatedAtDesc(userId);
+        return notificationRepository.findByUserIdAndDeletedFalseOrderByCreatedAtDesc(userId);
     }
 
     @Transactional(readOnly = true)
     public long getUnreadCount(Long userId) {
-        return notificationRepository.countByUserIdAndIsReadFalseAndIsDeletedFalse(userId);
+        return notificationRepository.countByUserIdAndIsReadFalseAndDeletedFalse(userId);
     }
 
     @Transactional
@@ -72,7 +72,7 @@ public class NotificationService {
     // FIX: Added mark-all-read method
     @Transactional
     public void markAllAsRead(Long userId) {
-        List<Notification> unread = notificationRepository.findByUserIdAndIsDeletedFalseOrderByCreatedAtDesc(userId)
+        List<Notification> unread = notificationRepository.findByUserIdAndDeletedFalseOrderByCreatedAtDesc(userId)
                 .stream().filter(n -> !n.isRead()).toList();
         unread.forEach(n -> n.setRead(true));
         notificationRepository.saveAll(unread);
