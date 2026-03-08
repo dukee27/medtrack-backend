@@ -1,13 +1,26 @@
 # MEDTRACK
 
 ```text
- __  __          _ _____               _    
-|  \/  |        | |_   _|             | |   
-| \  / | ___  __| | | | '__/ _` |/ __| |/ / 
-| |\/| |/ _ \/ _` | | | | | (_| | (__|   <  
-| |  | |  __/ (_| | | | |  \__,_|\___|_|\_\ 
-|_|  |_|\___|\__,_| |_|_|                 
+███╗   ███╗███████╗██████╗ ████████╗██████╗  █████╗  ██████╗██╗  ██╗
+████╗ ████║██╔════╝██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝
+██╔████╔██║█████╗  ██║  ██║   ██║   ██████╔╝███████║██║     █████╔╝ 
+██║╚██╔╝██║██╔══╝  ██║  ██║   ██║   ██╔══██╗██╔══██║██║     ██╔═██╗ 
+██║ ╚═╝ ██║███████╗██████╔╝   ██║   ██║  ██║██║  ██║╚██████╗██║  ██╗
+╚═╝     ╚═╝╚══════╝╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
 ```
+
+## PROJECT LINKS
+
+Live Application  
+https://medtrackcare.vercel.app
+
+Frontend Repository  
+https://github.com/dukee27/medtrack-frontend
+
+Backend Repository  
+https://github.com/dukee27/medtrack-backend
+
+---
 
 A full-stack medical adherence infrastructure designed to bridge the gap between **clinical prescriptions and real-world patient routines**.
 
