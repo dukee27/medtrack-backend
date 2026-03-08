@@ -37,13 +37,14 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable) 
             // Enable CORS using our configured source (allows browser preflight OPTIONS requests)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            // Stateless session (since we use JWTs)gb
+            // Stateless session (since we use JWTs)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/v1/auth/**", "/api/v1/users/register").permitAll() // Public
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()         // Swagger Public
+                .requestMatchers("/actuator/health", "/api/health").permitAll() 
                 .anyRequest().authenticated()                                             // Everything else Private
             )
             
@@ -63,7 +64,6 @@ public class SecurityConfig {
     /**
      * CORS configuration - allows the React frontend (Vite dev server + nginx Docker)
      * to make authenticated API calls including browser preflight OPTIONS requests.
-     * Without this, POST requests fail because browsers send OPTIONS first.
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -84,10 +84,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Expose AuthenticationManager for AuthController
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }  
-
 }
