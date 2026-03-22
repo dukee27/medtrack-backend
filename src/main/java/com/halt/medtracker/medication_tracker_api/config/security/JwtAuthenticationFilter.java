@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new WebAuthenticationDetailsSource().buildDetails(request)
             );
 
-                    // Set Spring Security Context (Log them in!)
+                    // set spring security Context (log them in!)
                     // user gets stamped here for the controller to know ,for that millisecond 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }

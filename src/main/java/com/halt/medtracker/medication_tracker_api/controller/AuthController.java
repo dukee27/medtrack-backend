@@ -25,7 +25,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<com.halt.medtracker.medication_tracker_api.dto.ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         
-        // Checks password hash automatically
+        // checks password hash here, to further establish security for the users 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

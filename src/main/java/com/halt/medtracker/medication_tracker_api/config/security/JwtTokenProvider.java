@@ -24,12 +24,10 @@ public class JwtTokenProvider {
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
-    // Generate Key
     private Key key() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    // Generate Token
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
         Date currentDate = new Date();
@@ -43,7 +41,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Get Username from Token
     public String getUsername(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key())
@@ -53,7 +50,6 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    //  Validate Token
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

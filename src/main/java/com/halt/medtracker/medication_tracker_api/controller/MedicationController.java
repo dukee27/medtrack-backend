@@ -48,7 +48,6 @@ public class MedicationController {
         User actor = userService.getUserByEmail(userDetails.getUsername());
         User subject = subjectResolver.resolveSubject(actor, patientId, Permissions.MEDICATION_CREATE);
 
-        // Updated signature to log actor
         Medication created = medicationService.createMedication(actor, subject, request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -65,13 +64,12 @@ public class MedicationController {
         User actor = userService.getUserByEmail(userDetails.getUsername());
         User subject = subjectResolver.resolveSubject(actor, patientId, Permissions.MEDICATION_EDIT);
 
-        // Updated signature to log actor
         Medication edited = medicationService.updateMedication(actor, subject, id, request);
 
         return ResponseEntity.ok(ApiResponse.success("Medication updated", medicationMapper.toResponse(edited)));
     }
 
-    // --- NEW: ENTERPRISE SOFT DELETE ---
+    // soft delete
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteMedication(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -87,7 +85,7 @@ public class MedicationController {
         return ResponseEntity.ok(ApiResponse.success("Medication successfully archived", null));
     }
 
-    // --- NEW: SMART AUTO SUGGESTIONS ---
+    // auto adds old meds or details 
     @GetMapping("/suggestions")
     public ResponseEntity<ApiResponse<List<MedicationResponseDTO>>> getSuggestions(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -111,7 +109,7 @@ public class MedicationController {
         User actor = userService.getUserByEmail(userDetails.getUsername());
         User subject = subjectResolver.resolveSubject(actor, patientId, Permissions.MEDICATION_VIEW);
 
-        // Routing through the dynamic filter with an empty request to automatically exclude soft-deleted items!
+        // routing through the dynamic filter with an empty request to automatically exclude soft-deleted items!
         Page<Medication> page = medicationService.getMedications(subject, new MedicationFilterRequest(), Pageable.unpaged());
         List<MedicationResponseDTO> result = page.getContent().stream().map(medicationMapper::toResponse).toList();
 
@@ -127,7 +125,6 @@ public class MedicationController {
         User actor = userService.getUserByEmail(userDetails.getUsername());
         User subject = subjectResolver.resolveSubject(actor, patientId, Permissions.MEDICATION_VIEW);
 
-        // FIX: Pass the subject to the service to enforce security!
         Medication medication = medicationService.getMedicationById(id, subject);
 
         return ResponseEntity.ok(ApiResponse.success("Fetched successfully", medicationMapper.toResponse(medication)));

@@ -29,23 +29,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // Injected
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable) 
-            // Enable CORS using our configured source (allows browser preflight OPTIONS requests)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            // Stateless session (since we use JWTs)
+            // running on stateless sessions
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/api/v1/auth/**", "/api/v1/users/register").permitAll() // Public
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()         // Swagger Public
+                .requestMatchers("/api/v1/auth/**", "/api/v1/users/register").permitAll() // public endpoints 
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()         // swagger public
                 .requestMatchers("/actuator/health", "/api/health").permitAll() 
-                .anyRequest().authenticated()                                             // Everything else Private
+                .anyRequest().authenticated()                                             // everything else private
             )
             
             .exceptionHandling(exception -> exception
@@ -55,7 +54,7 @@ public class SecurityConfig {
                     response.getWriter().write("{\"status\":\"error\",\"message\":\"Unauthorized: " + authException.getMessage() + "\"}");
                 })
             )
-            // Add our custom JWT filter BEFORE the standard UsernamePassword filter
+            // this kind of adds out custom filter before the main user/pass one, for filter chain
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

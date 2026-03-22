@@ -28,17 +28,15 @@ public class MedicationService {
 
     private final MedicationRepository medicationRepository;
     private final MedicationMapper medicationMapper;
-    private final ActivityLogService activityLogService; // Injected Audit Logger
+    private final ActivityLogService activityLogService; 
 
     @Transactional
     public Medication createMedication(User actor, User subject, CreateMedicationRequestDTO request) {
         
-        // FIX IS HERE: Pass the 'subject' directly into your mapper!
         Medication medication = medicationMapper.toEntity(request, subject); 
         
         Medication saved = medicationRepository.save(medication);
 
-        // Audit Log
         activityLogService.logActivity(
             actor, 
             subject, 
@@ -60,7 +58,7 @@ public class MedicationService {
         Medication medication = medicationRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found or has been deleted"));
         
-        // Enterprise Security Check
+        // enterprise Security Check
         if (!medication.getUser().getId().equals(subject.getId())) {
             throw new ResourceNotFoundException("Medication not found for this user");
         }
@@ -76,7 +74,6 @@ public class MedicationService {
         medicationMapper.updateEntity(medication, request);
         Medication updated = medicationRepository.save(medication);
 
-        // Audit Log
         activityLogService.logActivity(
             actor, subject, ActivityEntityType.MEDICATION.name(), ActivityActionType.UPDATE.name(), 
             "{\"medicationId\":" + updated.getId() + "}", actor.getFirstName() + " updated medication: " + updated.getName()
@@ -88,7 +85,6 @@ public class MedicationService {
     @Transactional
     public void deleteMedication(User actor, User subject, Long id, String reason) {
         
-        // This now safely fetches AND verifies ownership in one line!
         Medication medication = getMedicationById(id, subject); 
 
         medication.setDeleted(true);
@@ -98,7 +94,6 @@ public class MedicationService {
         
         medicationRepository.save(medication);
 
-        // Audit Log
         activityLogService.logActivity(
             actor, subject, ActivityEntityType.MEDICATION.name(), ActivityActionType.DELETE.name(), 
             "{\"medicationId\":" + id + ", \"reason\":\"" + medication.getDeleteReason() + "\"}", 
@@ -106,18 +101,16 @@ public class MedicationService {
         );
     }
 
-    // --- SMART AUTO SUGGESTION ---
+    // smart suggestion , pops up previous meds
     @Transactional(readOnly = true)
     public List<Medication> getPreviouslyUsedSuggestions(User subject, String nameSearch) {
         List<Medication> allMatches = medicationRepository.findPreviouslyUsedByName(subject.getId(), nameSearch);
         
-        // UX FIX: Group by name and only keep the most recent unique medication to avoid duplicate dropdowns
         return allMatches.stream()
                 .collect(java.util.stream.Collectors.toMap(
-                        // Key: Convert to lowercase to catch "Tylenol" and "paracetamol" as the same if typed weirdly
                         m -> m.getName().toLowerCase(), 
                         m -> m, 
-                        // If duplicates exist, keep the existing one (which is the most recent due to our Repo ORDER BY DESC)
+                        // if duplicates exist, keep the existing one (which is the most recent due to our repo ORDER BY DESC)
                         (existing, replacement) -> existing 
                 ))
                 .values()
@@ -125,7 +118,6 @@ public class MedicationService {
                 .toList();
     }
 
-    // --- ENTERPRISE ARCHIVE & RESTORE ---
     @Transactional(readOnly = true)
     public List<Medication> getArchivedMedications(User subject) {
         return medicationRepository.findByUserIdAndDeletedTrue(subject.getId());
@@ -140,7 +132,7 @@ public class MedicationService {
             throw new SecurityException("Unauthorized access to this medication");
         }
 
-        // Remove the soft delete flags
+        // remove the soft delete flags
         medication.setDeleted(false);
         medication.setDeletedAt(null);
         medication.setDeletedBy(null);
@@ -148,7 +140,6 @@ public class MedicationService {
 
         Medication restored = medicationRepository.save(medication);
 
-        // Audit Log
         activityLogService.logActivity(
             actor, subject, ActivityEntityType.MEDICATION.name(), ActivityActionType.RESTORE.name(), 
             "{\"medicationId\":" + id + "}", actor.getFirstName() + " restored medication: " + restored.getName()
