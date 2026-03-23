@@ -19,7 +19,7 @@ public class SubjectResolver {
             Long patientId,
             Permissions permission) {
 
-        // Self access
+        // self access
         if (patientId == null || actor.getId().equals(patientId)) {
             return actor;
         }

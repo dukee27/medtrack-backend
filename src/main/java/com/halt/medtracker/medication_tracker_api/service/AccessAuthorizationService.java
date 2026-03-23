@@ -18,13 +18,12 @@ public class AccessAuthorizationService {
 
     public void authorize(User actor, User patient, Permissions requiredPermission) {
 
-        // Self access is always allowed automatically
+        // self access is always allowed automatically
         if (actor.getId().equals(patient.getId())) {
             return;
         }
 
-        // Fetch the active permission relationship matrix
-        // FIX: Using the new secure repository method we created to prevent the Enum crash
+        // fetch the active permission relationship matrix
         AccessControl access = accessControlRepository
                 .findFirstByPatientIdAndCaregiverIdAndStatusAndDeletedFalse(
                         patient.getId(), 
@@ -34,7 +33,6 @@ public class AccessAuthorizationService {
                         new AccessDeniedException("Access not granted to this account")
                 );
 
-        // Check the enterprise granular permission set
         if (access.getPermissions() == null || !access.getPermissions().contains(requiredPermission)) {
             throw new AccessDeniedException("You lack the specific permission: " + requiredPermission.name() + " for this patient");
         }

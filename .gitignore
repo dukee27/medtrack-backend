@@ -23,6 +23,10 @@
 hs_err_pid*
 
 # Build directories
+*.pem
+*.key
+.env
+.env.*
 target/
 build/
 bin/
